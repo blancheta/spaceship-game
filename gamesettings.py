@@ -10,6 +10,7 @@ class GameSettings:
 		self.scr_width = self.screen.get_rect().width
 		self.scr_height = self.screen.get_rect().height
 		self.size = self.scr_width, self.scr_height
+
 		# Background Game
 		self.bg = pygame.image.load("images/settings.jpg")
 		self.bg_rect = self.bg.get_rect()
@@ -25,7 +26,6 @@ class GameSettings:
 			self.screen.fill((0,0,0))
 			self.screen.blit(self.bg,self.bg_rect)
 
-
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
 					sys.exit()
@@ -33,10 +33,7 @@ class GameSettings:
 			keys = pygame.key.get_pressed()
 
 			if keys[pygame.K_ESCAPE]:
-				print("Escape")
 				mainloop = False
 				self.escape_selected = True
-
-			print("en cours")
 
 			pygame.display.flip()

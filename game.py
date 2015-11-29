@@ -20,6 +20,7 @@ class Game:
 		self.scr_width = self.screen.get_rect().width
 		self.scr_height = self.screen.get_rect().height
 		self.size = self.scr_width, self.scr_height
+
 		# Background Game
 		self.bg = pygame.image.load("images/starsbackground.jpg")
 		self.bg_rect = self.bg.get_rect()
@@ -56,7 +57,6 @@ class Game:
 		self.ennemybullet = ()
 
 		# Init Invaders
-
 		for i in range(10):
 			self.invaders.append(Nasty((self.init_x,10)))
 			self.init_x += 50
@@ -91,7 +91,6 @@ class Game:
 					sys.exit()
 			
 			# Keyboard Events
-
 			keys = pygame.key.get_pressed()
 
 			if keys[pygame.K_LEFT]:
@@ -134,13 +133,10 @@ class Game:
 				self.timecount_m += self.clock.get_time()
 
 			# Invader Colision + Vertical Movement
-
 			if len(self.invaders) > 0:
 				for i,invader in enumerate(self.invaders):
-					print(i)
 					if invader.image_rect.collidepoint(self.bu.image_rect.x,self.bu.image_rect.y):
 						remove_item.append(i)
-						print("Explosion")
 						self.explosion = True
 					else:
 						if self.is_moving and not self.game_over:
@@ -155,7 +151,6 @@ class Game:
 
 			if not self.has_already_chosen:
 
-				print("Invaders : restants", len(self.invaders))
 				# Select random invader
 				if len(self.invaders) > 0 and not self.game_over:
 					if len(self.invaders) is not 1:
@@ -173,7 +168,6 @@ class Game:
 			self.timecount += self.clock.get_time()
 
 			if self.timecount > self.nasty_shoot_time and self.has_already_chosen:
-				print("Invader shoots")
 				self.timecount = 0
 				self.has_already_chosen = False
 			
@@ -184,7 +178,6 @@ class Game:
 					self.screen.blit(self.ennemybullet.image,self.ennemybullet.image_rect)
 
 			# Remaining lifes
-
 			pygame.draw.rect(self.screen, (255,255,255), [self.scr_width - 120,0, 120,40], 1)
 			for life in self.lifes:
 
@@ -192,7 +185,6 @@ class Game:
 
 
 			# Shuttle Colision
-
 			if self.sp.image_rect.collidepoint(self.ennemybullet.image_rect.x,self.ennemybullet.image_rect.y) and self.shuttle_explosion == False:
 				self.timecount = self.nasty_shoot_time
 				self.has_already_chosen = False
@@ -213,6 +205,7 @@ class Game:
 			if self.game_over:
 				self.screen.blit(self.label_game_over,(self.scr_width/2 - self.label_game_over.get_rect().width/2,self.scr_height/2 - self.label_game_over.get_rect().height/2))
 				mainloop = False
+
 			# Remove dead invaders
 			for item in remove_item:
 				del self.invaders[item]

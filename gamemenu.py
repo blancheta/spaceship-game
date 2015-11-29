@@ -20,9 +20,11 @@ class GameMenu:
 		# Sound Menu Change
 		self.menu_sound = pygame.mixer.Sound('sounds/menu_noise.wav')
 		self.valid_menu_sound = pygame.mixer.Sound('sounds/menu_valid_sound.wav')
+
 		# Menu Music
 		self.menu_music = pygame.mixer.music.load('sounds/music.mp3')
 		pygame.mixer.music.set_volume(0)
+
 		# Main Menu
 		self.clock = pygame.time.Clock()
 		self.font = pygame.font.SysFont(font,font_size)
@@ -34,7 +36,7 @@ class GameMenu:
 		self.current_item = ()
 		self.items = []
 
-		# On positionne les titres des menu sur l'écran
+		# Position menu titles on the menu screen
 		for index, item in enumerate(items):
 			label = self.font.render(item,1,font_color)
 			
@@ -42,6 +44,7 @@ class GameMenu:
 			height = label.get_rect().height
 
 			posx = (self.scr_width / 2) - ( width / 2)
+
 			# t_h: total height of text block
 			t_h = len(items) * height
 
@@ -49,20 +52,17 @@ class GameMenu:
 
 			self.items.append([item,label,(width,height),(posx,posy)])
 
-
-
 	def run(self):
 
 		mainloop = True
 		while mainloop:
+
 			# Limit frame speed to 50 FPS
 			self.clock.tick(50)
 
 			if not pygame.mixer.music.get_busy():
-				print("Replay music")
 				pygame.mixer.music.rewind()
 				pygame.mixer.music.play()
-
 
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
