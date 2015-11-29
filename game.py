@@ -37,7 +37,7 @@ class Game:
 
 		# Sound Game
 		self.laser_sound = pygame.mixer.Sound('sounds/laser_shot.wav')
-
+		self.laser_sound.set_volume(0.2)
 		#Clock
 		self.clock = pygame.time.Clock()
 
@@ -95,12 +95,10 @@ class Game:
 
 			if keys[pygame.K_LEFT]:
 				self.sp.image_rect.x -= 10
-				print(self.being_shot)
 				if self.being_shot == False:
 					self.bu.image_rect.x -= 10
 			elif keys[pygame.K_RIGHT]:
 				self.sp.image_rect.x += 10
-				print(self.being_shot)
 				if self.being_shot == False:
 					self.bu.image_rect.x += 10
 			elif keys[pygame.K_SPACE]:
@@ -117,7 +115,7 @@ class Game:
 					self.being_shot = True
 					self.bu.image_rect = self.bu.image_rect.move([0,-6])
 				else:
-					self.laser_sound.stop()
+					self.laser_sound.fadeout(1000)
 					self.bu.image_rect.x, self.bu.image_rect.y = (self.sp.image_rect.x + self.sp.image_rect.width/2,self.sp.image_rect.y)
 
 					self.shoot = False
@@ -133,6 +131,7 @@ class Game:
 				self.timecount_m += self.clock.get_time()
 
 			# Invader Colision + Vertical Movement
+			print(len(self.invaders))
 			if len(self.invaders) > 0:
 				for i,invader in enumerate(self.invaders):
 					if invader.image_rect.collidepoint(self.bu.image_rect.x,self.bu.image_rect.y):
@@ -144,10 +143,6 @@ class Game:
 							self.timecount_m = 0
 					
 						self.screen.blit(invader.image,invader.image_rect)
-			else:
-				self.victory = True
-				self.screen.blit(self.label_victory,(self.scr_width/2 - self.label_victory.get_rect().width/2,self.scr_height/2 - self.label_victory.get_rect().height/2))
-				mainloop = False
 
 			if not self.has_already_chosen:
 
@@ -156,7 +151,9 @@ class Game:
 					if len(self.invaders) is not 1:
 						self.randinvader = self.invaders[randint(1,len(self.invaders)-1)]
 					else:
-						self.randinvader = self.invaders.pop()
+						self.randinvader = self.invaders[0]
+					#	print("Passage làààà")
+					#	self.randinvader = self.invaders.pop()
 
 					self.has_already_chosen = True
 					posx = self.randinvader.image_rect.x
@@ -164,6 +161,10 @@ class Game:
 					height = self.randinvader.image_rect.height
 					posy = self.randinvader.image_rect.y
 					self.ennemybullet = Bullet((posx + width/2,posy + height))
+				else:
+					self.victory = True
+					self.screen.blit(self.label_victory,(self.scr_width/2 - self.label_victory.get_rect().width/2,self.scr_height/2 - self.label_victory.get_rect().height/2))
+					mainloop = False
 
 			self.timecount += self.clock.get_time()
 

@@ -23,7 +23,7 @@ class GameMenu:
 
 		# Menu Music
 		self.menu_music = pygame.mixer.music.load('sounds/music.mp3')
-		pygame.mixer.music.set_volume(0)
+		pygame.mixer.music.set_volume(0.5)
 
 		# Main Menu
 		self.clock = pygame.time.Clock()
@@ -88,7 +88,6 @@ class GameMenu:
 								self.start_selected = True
 								
 							elif self.current_item[0] == "Settings":
-								print("Accès à la configuration")
 								self.settings_selected = True
 
 							elif self.current_item[0] == "Quit":
