@@ -1,10 +1,11 @@
 #!/usr/bin/python3
-
+import sys
 import pygame
+
 
 class GameSettings:
 
-	def __init__(self,screen):
+	def __init__(self, screen):
 
 		self.screen = screen
 		self.scr_width = self.screen.get_rect().width
@@ -16,15 +17,14 @@ class GameSettings:
 		self.bg_rect = self.bg.get_rect()
 		self.escape_selected = False
 
-
 	def run(self):
 
 		mainloop = True
 		while mainloop:
 
 			# Redraw the background
-			self.screen.fill((0,0,0))
-			self.screen.blit(self.bg,self.bg_rect)
+			self.screen.fill((0, 0, 0))
+			self.screen.blit(self.bg, self.bg_rect)
 
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:

@@ -1,6 +1,4 @@
 #!/usr/bin/python3
-import os
-import sys
 import pygame
 from game import Game
 from gamemenu import GameMenu
@@ -8,22 +6,23 @@ from gamesettings import GameSettings
 
 pygame.init()
 
-screen = pygame.display.set_mode((640,480),0,32)
+screen = pygame.display.set_mode((640, 480), 0, 32)
 
 # Game Menu
 pygame.display.set_caption('Game Menu')
-menu_items = ('Start','Settings','Quit')
-gm = GameMenu(screen,menu_items)
+menu_items = ('Start', 'Settings', 'Quit')
+gm = GameMenu(screen, menu_items)
 
 # Settings
 gs = GameSettings(screen)
-bg_color = (0,0,0)
+bg_color = (0, 0, 0)
 
 mainloop = True
 while mainloop:
 	screen.fill(bg_color)
 	g = None
-	if (gm.quit_select == False or gm.start_selected == False) or g.escape_selected == True or gs.escape_selected:
+	if (gm.quit_select is False or gm.start_selected is False) or \
+		(g.escape_selected is True or gs.escape_selected):
 		gm.run()
 		if g is not None:
 			g.escape_selected = False
@@ -38,8 +37,8 @@ while mainloop:
 	if gm.settings_selected:
 		gs.run()
 		gm.settings_selected = False
-		
-	if gm.quit_select == True:
+
+	if gm.quit_select is True:
 		mainloop = False
 
 	pygame.display.flip()
