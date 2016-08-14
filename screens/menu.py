@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 import sys
 import pygame
-
 pygame.init()
 
 
@@ -17,15 +16,15 @@ class GameMenu:
 
 		# Background Main Menu
 		self.bg_color = bg_color
-		self.bck = pygame.image.load('images/menubackground.jpg')
+		self.bck = pygame.image.load('resources/images/menubackground.jpg')
 		self.bck_rect = self.bck.get_rect()
 
 		# Sound Menu Change
-		self.menu_sound = pygame.mixer.Sound('sounds/menu_noise.wav')
-		self.valid_menu_sound = pygame.mixer.Sound('sounds/menu_valid_sound.wav')
+		self.menu_sound = pygame.mixer.Sound('resources/sounds/menu_noise.wav')
+		self.valid_menu_sound = pygame.mixer.Sound('resources/sounds/menu_valid_sound.wav')
 
 		# Menu Music
-		self.menu_music = pygame.mixer.music.load('sounds/music.mp3')
+		self.menu_music = pygame.mixer.music.load('resources/sounds/music.mp3')
 		pygame.mixer.music.set_volume(0.5)
 
 		# Main Menu

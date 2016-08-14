@@ -4,10 +4,10 @@ import os
 import pygame
 topdir = os.path.join(os.path.dirname(__file__), "..")
 sys.path.append(topdir)
-from spaceship import Spaceship
-from life import Life
-from nasty import Nasty
-from bullet import Bullet
+from classes.spaceship import Spaceship
+from classes.life import Life
+from classes.nasty import Nasty
+from classes.bullet import Bullet
 
 
 class TestGameModels:

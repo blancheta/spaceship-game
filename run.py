@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 import pygame
-from game import Game
-from gamemenu import GameMenu
-from gamesettings import GameSettings
+from screens.game import Game
+from screens.menu import GameMenu
+from screens.settings import GameSettings
 
 pygame.init()
 

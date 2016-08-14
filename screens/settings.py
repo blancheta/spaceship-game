@@ -13,7 +13,7 @@ class GameSettings:
 		self.size = self.scr_width, self.scr_height
 
 		# Background Game
-		self.bg = pygame.image.load("images/settings.jpg")
+		self.bg = pygame.image.load("resources/images/settings.jpg")
 		self.bg_rect = self.bg.get_rect()
 		self.escape_selected = False
 

@@ -2,10 +2,10 @@
 import sys
 import pygame
 from random import randint
-from spaceship import *
-from bullet import *
-from nasty import *
-from life import Life
+from classes.spaceship import Spaceship
+from classes.bullet import Bullet
+from classes.nasty import Nasty
+from classes.life import Life
 
 pygame.init()
 
@@ -20,7 +20,7 @@ class Game:
 		self.size = self.scr_width, self.scr_height
 
 		# Background Game
-		self.bg = pygame.image.load("images/starsbackground.jpg")
+		self.bg = pygame.image.load("resources/images/starsbackground.jpg")
 		self.bg_rect = self.bg.get_rect()
 
 		# Life Bar
@@ -36,7 +36,7 @@ class Game:
 		self.label_victory = self.font.render("Victory is yours", 1, (255, 255, 255))
 
 		# Sound Game
-		self.laser_sound = pygame.mixer.Sound('sounds/laser_shot.wav')
+		self.laser_sound = pygame.mixer.Sound('resources/sounds/laser_shot.wav')
 		self.laser_sound.set_volume(0.2)
 		# Clock
 		self.clock = pygame.time.Clock()

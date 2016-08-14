@@ -5,8 +5,8 @@ import pygame
 topdir = os.path.join(os.path.dirname(__file__), "..")
 sys.path.append(topdir)
 from game import Game
-from spaceship import Spaceship
-from bullet import Bullet
+from classes.spaceship import Spaceship
+from classes.bullet import Bullet
 
 
 class TestGame:
