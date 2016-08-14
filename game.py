@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-import os
 import sys
 import pygame
 from random import randint
@@ -7,7 +6,6 @@ from spaceship import *
 from bullet import *
 from nasty import *
 from life import Life
-from threading import Thread
 
 pygame.init()
 
@@ -27,10 +25,12 @@ class Game:
 
 		# Life Bar
 		self.lifes = []
+		self.lifes_number = 3
 
 		self.game_over = False
 		self.victory = False
 
+		# Labels
 		self.font = pygame.font.SysFont(None, 100)
 		self.label_game_over = self.font.render("Game Over", 1, (255, 255, 255))
 		self.label_victory = self.font.render("Victory is yours", 1, (255, 255, 255))
@@ -49,6 +49,7 @@ class Game:
 		self.bu = Bullet(self.init_pos_bullet)
 		self.init_x = 10
 		self.invaders = []
+		self.invaders_number = 10
 		self.escape_selected = False
 		self.has_already_chosen = False
 
@@ -59,14 +60,14 @@ class Game:
 		self.ennemybullet = ()
 
 		# Init Invaders
-		for i in range(10):
+		for i in range(self.invaders_number):
 			self.invaders.append(Nasty((self.init_x, 10)))
 			self.init_x += 50
 
 		# Init life bar
 		self.init_life_x = self.scr_width - 120
 
-		for i in range(3):
+		for i in range(self.lifes_number):
 			self.lifes.append(Life((self.init_life_x, 0)))
 			self.init_life_x += 40
 
