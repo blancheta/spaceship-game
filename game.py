@@ -113,7 +113,7 @@ class Game:
 			if self.shoot is True:
 				self.laser_sound.play()
 
-				if self.bu.image_rect.y > 0 is self.explosion is False:
+				if self.bu.image_rect.y > 0 and self.explosion is False:
 					self.being_shot = True
 					self.bu.image_rect = self.bu.image_rect.move([0, -6])
 				else:
