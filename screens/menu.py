@@ -16,8 +16,8 @@ class GameMenu:
 
 		# Background Main Menu
 		self.bg_color = bg_color
-		self.bck = pygame.image.load('resources/images/menubackground.jpg')
-		self.bck_rect = self.bck.get_rect()
+		self.bg_img = pygame.image.load('resources/images/menubackground.jpg')
+		self.bg_img_rect = self.bg_img.get_rect()
 
 		# Sound Menu Change
 		self.menu_sound = pygame.mixer.Sound('resources/sounds/menu_noise.wav')
@@ -30,13 +30,17 @@ class GameMenu:
 		# Main Menu
 		self.clock = pygame.time.Clock()
 		self.font = pygame.font.SysFont(font, font_size)
-		self.font_color = font_color
+
+		self.paddingx = 8
+		self.paddingy = 20
+
 		self.start_selected = False
 		self.settings_selected = False
 		self.quit_select = False
+
 		self.index_selected = 0
 		self.current_item = ()
-		self.items = []
+		self.menu_items = []
 
 		# Position menu titles on the menu screen
 		for index, item in enumerate(items):
@@ -51,7 +55,7 @@ class GameMenu:
 			t_h = len(items) * height
 
 			posy = (self.scr_height / 2) - (t_h / 2) + (index * height)
-			self.items.append([item, label, (width, height), (posx, posy)])
+			self.menu_items.append([item, label, (width, height), (posx, posy)])
 
 	def run(self):
 
@@ -59,7 +63,7 @@ class GameMenu:
 		while mainloop:
 
 			# Limit frame speed to 50 FPS
-			self.clock.tick(50)
+			# self.clock.tick(20)
 
 			if not pygame.mixer.music.get_busy():
 				pygame.mixer.music.rewind()
@@ -72,15 +76,15 @@ class GameMenu:
 				elif event.type == pygame.KEYDOWN:
 					if event.key == pygame.K_UP:
 						self.menu_sound.play()
-						for index, item in enumerate(self.items):
+						for index, item in enumerate(self.menu_items):
 							if self.current_item[0] == item[0]:
 								if self.index_selected > 0:
 									self.index_selected -= 1
 					if event.key == pygame.K_DOWN:
 						self.menu_sound.play()
-						for index, item in enumerate(self.items):
+						for index, item in enumerate(self.menu_items):
 							if self.current_item[0] == item[0]:
-								if self.index_selected < (len(self.items) - 1):
+								if self.index_selected < (len(self.menu_items) - 1):
 									self.index_selected += 1
 					if event.key == pygame.K_RETURN:
 						self.valid_menu_sound.play()
@@ -97,18 +101,15 @@ class GameMenu:
 							pygame.mixer.music.fadeout(1000)
 							mainloop = False
 
-			self.current_item = self.items[self.index_selected]
-
-			paddingy = 8
-			paddingx = 20
+			self.current_item = self.menu_items[self.index_selected]
 
 			# Redraw the background
 			self.screen.fill(self.bg_color)
 
 			if not self.start_selected or not self.settings_selected:
-				self.screen.blit(self.bck, self.bck_rect)
+				self.screen.blit(self.bg_img, self.bg_img_rect)
 
-				for name, label, (width, height), (posx, posy) in self.items:
+				for name, label, (width, height), (posx, posy) in self.menu_items:
 					self.screen.blit(label, (posx, posy))
 
 				name, label, (width, height), (posx, posy) = self.current_item
@@ -116,8 +117,8 @@ class GameMenu:
 				pygame.draw.rect(
 					self.screen, (255, 255, 255),
 					[
-						posx - paddingx, posy - paddingy,
-						width + paddingx + paddingx, height + paddingy
+						posx - self.paddingx, posy - self.paddingy,
+						width + self.paddingx + self.paddingx, height + self.paddingy
 					], 2)
 
 			pygame.display.flip()

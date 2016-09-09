@@ -6,29 +6,34 @@ from screens.settings import GameSettings
 
 pygame.init()
 
+# set_mode(resolution=(width, height), flags=0, depth=0)
+# flags : collection of qdditional options
+# depth : number of bits use for colors
 screen = pygame.display.set_mode((640, 480), 0, 32)
+bg_color = (0, 0, 0)
 
 # Game Menu
 pygame.display.set_caption('Game Menu')
 menu_items = ('Start', 'Settings', 'Quit')
+
+# Views initialization
 gm = GameMenu(screen, menu_items)
-
-# Settings
 gs = GameSettings(screen)
-bg_color = (0, 0, 0)
+g = None
 
+menu_selected = True
 mainloop = True
 while mainloop:
+
 	screen.fill(bg_color)
-	g = None
-	if (gm.quit_select is False or gm.start_selected is False) or \
-		(g.escape_selected is True or gs.escape_selected):
+	if menu_selected or g.escape_selected:
 		gm.run()
 		if g is not None:
 			g.escape_selected = False
 		gs.escape_selected = False
 
 	if gm.start_selected:
+		pygame.display.set_caption('Game')
 		g = Game(screen)
 		g.run()
 		gm.start_selected = False
