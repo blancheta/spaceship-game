@@ -8,7 +8,6 @@ class GameObject:
 
 		# Init image
 		self.image = pygame.image.load(image)
-
 		self.image_rect = self.image.get_rect()
 
 	def init_pos(self, pos):

@@ -4,7 +4,7 @@ import pygame
 from random import randint
 from classes.spaceship import Spaceship
 from classes.bullet import Bullet
-from classes.nasty import Nasty
+from classes.invader import Invader
 from classes.life import Life
 
 pygame.init()
@@ -17,39 +17,38 @@ class Game:
 		self.screen = screen
 		self.scr_width = self.screen.get_rect().width
 		self.scr_height = self.screen.get_rect().height
-		self.size = self.scr_width, self.scr_height
+		self.screen_size = self.scr_width, self.scr_height
 
 		# Background Game
 		self.bg = pygame.image.load("resources/images/starsbackground.jpg")
 		self.bg_rect = self.bg.get_rect()
 
-		# Life Bar
-		self.lifes = []
-		self.lifes_number = 3
-
-		self.game_over = False
-		self.victory = False
+		# Sound Game
+		self.laser_sound = pygame.mixer.Sound('resources/sounds/laser_shot.wav')
+		self.laser_sound.set_volume(0.2)
 
 		# Labels
 		self.font = pygame.font.SysFont(None, 100)
 		self.label_game_over = self.font.render("Game Over", 1, (255, 255, 255))
 		self.label_victory = self.font.render("Victory is yours", 1, (255, 255, 255))
 
-		# Sound Game
-		self.laser_sound = pygame.mixer.Sound('resources/sounds/laser_shot.wav')
-		self.laser_sound.set_volume(0.2)
-		# Clock
-		self.clock = pygame.time.Clock()
+		# Life Bar
+		self.lifes = []
+		self.lifes_number = 3
 
-		# Init Variables
-		self.sp = Spaceship(self.size)
+		# Invaders
+		self.invaders = []
+		self.invaders_number = 10
+
+		# Spaceship and bullets
+		self.sp = Spaceship(self.screen_size)
 		self.init_pos_bullet = (
 			self.sp.image_rect.x + self.sp.image_rect.width / 2, self.sp.image_rect.y
 		)
 		self.bu = Bullet(self.init_pos_bullet)
-		self.init_x = 10
-		self.invaders = []
-		self.invaders_number = 10
+
+		self.game_over = False
+		self.victory = False
 		self.escape_selected = False
 		self.has_already_chosen = False
 
@@ -58,18 +57,6 @@ class Game:
 
 		self.randinvader = ()
 		self.ennemybullet = ()
-
-		# Init Invaders
-		for i in range(self.invaders_number):
-			self.invaders.append(Nasty((self.init_x, 10)))
-			self.init_x += 50
-
-		# Init life bar
-		self.init_life_x = self.scr_width - 120
-
-		for i in range(self.lifes_number):
-			self.lifes.append(Life((self.init_life_x, 0)))
-			self.init_life_x += 40
 
 		self.shoot = False
 		self.being_shot = False
@@ -82,6 +69,22 @@ class Game:
 		self.nasty_being_shot = False
 		self.nasty_shoot_time = 2000
 		self.timecount = 0
+
+		# Clock
+		self.clock = pygame.time.Clock()
+
+		# Init Invaders
+		self.init_x = 10
+		for i in range(self.invaders_number):
+			self.invaders.append(Invader((self.init_x, 10)))
+			self.init_x += 50
+
+		# Init life bar
+		self.init_life_x = self.scr_width - 120
+
+		for i in range(self.lifes_number):
+			self.lifes.append(Life((self.init_life_x, 0)))
+			self.init_life_x += 40
 
 	def run(self):
 		mainloop = True

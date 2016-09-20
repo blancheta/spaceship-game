@@ -2,9 +2,9 @@
 from classes.gameobject import GameObject
 
 
-class Nasty(GameObject):
+class Invader(GameObject):
 
 	def __init__(self, pos):
 
-		super(Nasty, self).__init__("./resources/images/invader.png")
+		super(Invader, self).__init__("./resources/images/invader.png")
 		self.init_pos(pos)
