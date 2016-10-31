@@ -8,9 +8,9 @@ class GameObject:
 
 		# Init image
 		self.image = pygame.image.load(image)
-		self.image_rect = self.image.get_rect()
+		self.sprite = self.image.get_rect()
 
 	def init_pos(self, pos):
 
 		# Init position
-		self.image_rect.x, self.image_rect.y = pos
+		self.sprite.x, self.sprite.y = pos

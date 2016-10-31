@@ -41,37 +41,38 @@ class Game:
 		self.invaders_number = 10
 
 		# Spaceship and bullets
-		self.sp = Spaceship(self.screen_size)
+		self.spaceship = Spaceship(self.screen_size)
 		self.init_pos_bullet = (
-			self.sp.image_rect.x + self.sp.image_rect.width / 2, self.sp.image_rect.y
+			self.spaceship.sprite.x + self.spaceship.sprite.width / 2, self.spaceship.sprite.y
 		)
-		self.bu = Bullet(self.init_pos_bullet)
+		self.bullet = Bullet(self.init_pos_bullet)
 
 		self.game_over = False
 		self.victory = False
 		self.escape_selected = False
-		self.has_already_chosen = False
 
-		# Shuttle explosion
-		self.shuttle_explosion = False
-
+		# Objects initialisation
 		self.randinvader = ()
 		self.ennemybullet = ()
 
-		self.shoot = False
-		self.being_shot = False
-		self.explosion = False
+		# Invaders
+		self.has_already_chosen = False
+		# Go down every second
+		self.nasty_move_time = 1000
+		# Invader shoot duration
+		self.nasty_shoot_time = 1000
+
+		self.invaders_moving = False
+		self.invader_exploding = False
 
 		# Time Variables
-		self.nasty_move_time = 2000
-		self.timecount_m = 0
-		self.is_moving = False
-		self.nasty_being_shot = False
-		self.nasty_shoot_time = 2000
-		self.timecount = 0
-
-		# Clock
 		self.clock = pygame.time.Clock()
+
+		# Timer for invaders vertical moving
+		self.timecount_m = 0
+
+		# Time for invader bullet vertical moving
+		self.timecount = 0
 
 		# Init Invaders
 		self.init_x = 10
@@ -92,71 +93,87 @@ class Game:
 			self.clock.tick(50)
 			self.screen.fill([0, 0, 0])
 			self.screen.blit(self.bg, self.bg_rect)
+
+			# Close the game when the red cross is clicked
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
 					sys.exit()
+
+
 
 			# Keyboard Events
 			keys = pygame.key.get_pressed()
 
 			if keys[pygame.K_LEFT]:
-				self.sp.image_rect.x -= 10
-				if self.being_shot is False:
-					self.bu.image_rect.x -= 10
+				self.spaceship.sprite.x -= 10
+				if self.spaceship.shooting is False:
+					self.bullet.sprite.x -= 10
 			elif keys[pygame.K_RIGHT]:
-				self.sp.image_rect.x += 10
-				if self.being_shot is False:
-					self.bu.image_rect.x += 10
+				self.spaceship.sprite.x += 10
+				if self.spaceship.shooting is False:
+					self.bullet.sprite.x += 10
 			elif keys[pygame.K_SPACE]:
-				self.shoot = True
+				self.spaceship.shoot = True
 			elif keys[pygame.K_ESCAPE]:
+				# Go back to the game menu
 				mainloop = False
 				self.escape_selected = True
 				pygame.mixer.music.rewind()
 
-			if self.shoot is True:
+
+
+			if self.spaceship.shoot is True:
 				self.laser_sound.play()
 
-				if self.bu.image_rect.y > 0 and self.explosion is False:
-					self.being_shot = True
-					self.bu.image_rect = self.bu.image_rect.move([0, -6])
+				if self.bullet.sprite.y > 0 and self.invader_exploding is False:
+					self.spaceship.shooting = True
+					self.bullet.sprite = self.bullet.sprite.move([0, -6])
 				else:
 					self.laser_sound.fadeout(1000)
-					self.bu.image_rect.x, self.bu.image_rect.y = (
-						self.sp.image_rect.x + self.sp.image_rect.width / 2, self.sp.image_rect.y
+					self.bullet.sprite.x, self.bullet.sprite.y = (
+						self.spaceship.sprite.x + self.spaceship.sprite.width / 2, self.spaceship.sprite.y
 					)
 
-					self.shoot = False
-					self.being_shot = False
-					self.explosion = False
+					self.spaceship.shoot = False
+					self.spaceship.shooting = False
+					self.invader_exploding = False
 
-			remove_item = []
 
-			if self.timecount_m > self.nasty_move_time:
-				self.is_moving = True
-			else:
-				self.is_moving = False
-				self.timecount_m += self.clock.get_time()
+
+			item_to_remove = None
 
 			# Invader Colision + Vertical Movement
-			print(len(self.invaders))
+
+			# Allow slowly vertical movement
+			if self.timecount_m > self.nasty_move_time:
+				self.invaders_moving = True
+			else:
+				self.invaders_moving = False
+				self.timecount_m += self.clock.get_time()
+
 			if len(self.invaders) > 0:
 				for i, invader in enumerate(self.invaders):
-					if invader.image_rect.collidepoint(
-						self.bu.image_rect.x, self.bu.image_rect.y
+					if invader.sprite.collidepoint(
+						self.bullet.sprite.x, self.bullet.sprite.y
 					):
-						remove_item.append(i)
-						self.explosion = True
+						item_to_remove = i
+						self.invader_exploding = True
 					else:
-						if self.is_moving and not self.game_over:
-							invader.image_rect.y += 15
+						if self.invaders_moving and not self.game_over:
+							invader.sprite.y += 15
 							self.timecount_m = 0
 
-						self.screen.blit(invader.image, invader.image_rect)
+						self.screen.blit(invader.image, invader.sprite)
+
+			# Remove dead invaders:
+			if item_to_remove is not None:
+				del self.invaders[item_to_remove]
+
 
 			if not self.has_already_chosen:
 
-				# Select random invader
+				# Select random invader among survivor invaders
+
 				if len(self.invaders) > 0 and not self.game_over:
 					if len(self.invaders) is not 1:
 						self.randinvader = self.invaders[randint(1, len(self.invaders) - 1)]
@@ -164,33 +181,53 @@ class Game:
 						self.randinvader = self.invaders[0]
 
 					self.has_already_chosen = True
-					posx = self.randinvader.image_rect.x
-					width = self.randinvader.image_rect.width
-					height = self.randinvader.image_rect.height
-					posy = self.randinvader.image_rect.y
+					posx = self.randinvader.sprite.x
+					width = self.randinvader.sprite.width
+					height = self.randinvader.sprite.height
+					posy = self.randinvader.sprite.y
 					self.ennemybullet = Bullet((posx + width / 2, posy + height))
 				else:
 					self.victory = True
-					self.screen.blit(
-						self.label_victory,
-						(
-							self.scr_width / 2 - self.label_victory.get_rect().width / 2,
-							self.scr_height / 2 - self.label_victory.get_rect().height / 2
-						)
-					)
-					mainloop = False
+
+
 
 			self.timecount += self.clock.get_time()
+
+			# Handle the bullet shot by the random invader
 
 			if self.timecount > self.nasty_shoot_time and self.has_already_chosen:
 				self.timecount = 0
 				self.has_already_chosen = False
 
-			# 	Invader shoot
 			elif self.timecount < self.nasty_shoot_time and self.has_already_chosen:
-				if self.ennemybullet.image_rect.y < self.scr_height:
-					self.ennemybullet.image_rect = self.ennemybullet.image_rect.move([0, 6])
-					self.screen.blit(self.ennemybullet.image, self.ennemybullet.image_rect)
+				if self.ennemybullet.sprite.y < self.scr_height:
+					self.ennemybullet.sprite = self.ennemybullet.sprite.move([0, 6])
+					self.screen.blit(self.ennemybullet.image, self.ennemybullet.sprite)
+
+
+
+
+
+
+			# Shuttle Displaying and Colision
+			if self.spaceship.sprite.collidepoint(
+				self.ennemybullet.sprite.x, self.ennemybullet.sprite.y
+			) and self.spaceship.exploding is False:
+				self.timecount = self.nasty_shoot_time
+				self.has_already_chosen = False
+				self.spaceship.exploding = True
+			else:
+				self.screen.blit(self.bullet.image, self.bullet.sprite)
+				self.screen.blit(self.spaceship.image, self.spaceship.sprite)
+
+			# Life Management and Displaying
+			if self.spaceship.exploding:
+				self.spaceship.exploding = False
+				if len(self.lifes) > 0:
+					self.lifes.pop()
+				else:
+					self.game_over = True
+					self.spaceship.exploding = False
 
 			# Remaining lifes
 			pygame.draw.rect(
@@ -198,27 +235,16 @@ class Game:
 			)
 
 			for life in self.lifes:
-				self.screen.blit(life.image, life.image_rect)
+				self.screen.blit(life.image, life.sprite)
 
-			# Shuttle Colision
-			if self.sp.image_rect.collidepoint(
-				self.ennemybullet.image_rect.x, self.ennemybullet.image_rect.y
-			) and self.shuttle_explosion is False:
-				self.timecount = self.nasty_shoot_time
-				self.has_already_chosen = False
-				self.shuttle_explosion = True
-			else:
-				self.screen.blit(self.bu.image, self.bu.image_rect)
-				self.screen.blit(self.sp.image, self.sp.image_rect)
-
-			# Remove life if shuttle has exploded
-			if self.shuttle_explosion:
-				self.shuttle_explosion = False
-				if len(self.lifes) > 0:
-					self.lifes.pop()
-				else:
-					self.game_over = True
-					self.shuttle_explosion = False
+			if self.victory:
+				self.screen.blit(
+					self.label_victory,
+					(
+						self.scr_width / 2 - self.label_victory.get_rect().width / 2,
+						self.scr_height / 2 - self.label_victory.get_rect().height / 2
+					)
+				)
 
 			if self.game_over:
 				self.screen.blit(
@@ -228,13 +254,10 @@ class Game:
 						self.scr_height / 2 - self.label_game_over.get_rect().height / 2
 					)
 				)
-				mainloop = False
 
-			# Remove dead invaders
-			for item in remove_item:
-				del self.invaders[item]
 
 			pygame.display.flip()
 
 			if self.game_over or self.victory:
-				pygame.time.delay(2000)
+				pygame.time.delay(4000)
+				mainloop = False
